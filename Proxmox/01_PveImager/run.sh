@@ -267,3 +267,28 @@ log "The template $template_name has been created successfully, with the passwor
 
 # Convert the VM to a template
 qm template $ID
+
+# Ask user if he wants to create a project folder (yes / no)
+if (whiptail --title "Create a project folder?" --yesno "Do you want to create a project folder?" 10 60) then
+    # Default project folder name
+    project_folder=$(hostname)_templates
+
+    # Ask user for the project folder name
+    project_folder_name=$(whiptail --inputbox "Enter the project folder name:" 10 60 "$project_folder" 3>&1 1>&2 2>&3)
+    check_cancel
+
+    # Create the project folder
+    mkdir -p "../../Projects/$project_folder_name"
+
+    # Log the project folder creation
+    log "Project folder $project_folder_name created successfully."
+
+    # Ask user if he wants to store the password in a file (yes / no)
+    if (whiptail --title "Store the password in a file?" --yesno "Do you want to store the password in a file?" 10 60) then
+        # Store the password in a file
+        echo "Password: $password" > "../../Projects/$project_folder_name/$template_name.pwd"
+
+        # Log the password storage
+        log "Password stored in the file $template_name.pwd in the project folder $project_folder_name."
+    fi
+fi
