@@ -1,0 +1,54 @@
+services:
+    mysql:
+        image: mysql:8.0.30
+        container_name: itop-mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${ITOP_DB_NAME}
+            MYSQL_USER: ${ITOP_DB_USER}
+            MYSQL_PASSWORD: ${ITOP_DB_PASSWORD}
+        volumes:
+            - mysql_data:/var/lib/mysql
+        ports:
+            - '${MYSQL_PORT:-3306}:3306'
+        networks:
+            - itop-network
+        command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: itop-phpmyadmin
+        restart: always
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: ${ITOP_DB_HOST}
+            PMA_PORT: ${MYSQL_PORT}
+            PMA_USER: ${ITOP_DB_USER}
+            PMA_PASSWORD: ${ITOP_DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        ports:
+            - '${PHPMYADMIN_PORT:-8081}:80'
+        networks:
+            - itop-network
+
+    itop:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: itop-app
+        restart: always
+        depends_on:
+            - mysql
+        ports:
+            - '${ITOP_PORT:-8080}:80'
+        volumes:
+            - .:/var/www/html
+        environment:
+            - ITOP_DB_HOST=${ITOP_DB_HOST}
+            - ITOP_DB_NAME=${ITOP_DB_NAME}
+            - ITOP_DB_USER=${ITOP_DB_USER}
+            - ITOP_DB_PASSWORD=${ITOP_DB_PASSWORD}
+        networks:
+            - itop-network

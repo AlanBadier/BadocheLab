@@ -1,0 +1,13 @@
+# Fichiers de configuration sensibles
+.env
+.env.local
+.env.production
+
+# Fichiers de logs et données
+*.log
+logs/
+data/
+
+# Fichiers temporaires
+*.tmp
+*.temp
