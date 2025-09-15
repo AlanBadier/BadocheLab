@@ -44,7 +44,8 @@ services:
         ports:
             - '${ITOP_PORT:-8080}:80'
         volumes:
-            - .:/var/www/html
+            - ./itop_data:/var/www/html
+
         environment:
             - ITOP_DB_HOST=${ITOP_DB_HOST}
             - ITOP_DB_NAME=${ITOP_DB_NAME}
@@ -52,3 +53,10 @@ services:
             - ITOP_DB_PASSWORD=${ITOP_DB_PASSWORD}
         networks:
             - itop-network
+
+volumes:
+    mysql_data:
+
+networks:
+    itop-network:
+        driver: bridge

@@ -7,7 +7,9 @@
 *.log
 logs/
 data/
+itop_data/*
 
 # Fichiers temporaires
 *.tmp
 *.temp
+*.zip
