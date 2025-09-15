@@ -3,6 +3,14 @@ services:
         image: mysql:8.0.30
         container_name: itop-mysql
         restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: '${MYSQL_CPU_LIMIT:-1.0}'
+                    memory: ${MYSQL_MEMORY_LIMIT:-1G}
+                reservations:
+                    cpus: '${MYSQL_CPU_RESERVATION:-0.5}'
+                    memory: ${MYSQL_MEMORY_RESERVATION:-512M}
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${ITOP_DB_NAME}
@@ -20,6 +28,14 @@ services:
         image: phpmyadmin/phpmyadmin:latest
         container_name: itop-phpmyadmin
         restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: '${PHPMYADMIN_CPU_LIMIT:-1.0}'
+                    memory: ${PHPMYADMIN_MEMORY_LIMIT:-1G}
+                reservations:
+                    cpus: '${PHPMYADMIN_CPU_RESERVATION:-0.5}'
+                    memory: ${PHPMYADMIN_MEMORY_RESERVATION:-512M}
         depends_on:
             - mysql
         environment:
@@ -39,6 +55,14 @@ services:
             dockerfile: Dockerfile
         container_name: itop-app
         restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: '${ITOP_CPU_LIMIT:-1.0}'
+                    memory: ${ITOP_MEMORY_LIMIT:-1G}
+                reservations:
+                    cpus: '${ITOP_CPU_RESERVATION:-0.5}'
+                    memory: ${ITOP_MEMORY_RESERVATION:-512M}
         depends_on:
             - mysql
         ports:
